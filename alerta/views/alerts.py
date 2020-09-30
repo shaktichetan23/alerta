@@ -20,6 +20,7 @@ from alerta.utils.response import absolute_url, jsonp
 
 from ..models.note import Note
 from . import api
+import json
 
 receive_timer = Timer('alerts', 'received', 'Received alerts', 'Total time and number of received alerts')
 gets_timer = Timer('alerts', 'queries', 'Alert queries', 'Total time and number of alert queries')
@@ -38,8 +39,26 @@ count_timer = Timer('alerts', 'counts', 'Count alerts', 'Total time and number o
 @timer(receive_timer)
 @jsonp
 def receive():
+    
+    # My code starts here
     try:
-        alert = Alert.parse(request.json)
+        new_req = {}
+        inp_req = request.json
+        new_res = request.remote_addr
+        new_req['resource'] = new_res
+        new_req['event'] = inp_req['event']['eventName']
+        new_req['severity'] = inp_req['event']['severity'].lower() 
+        new_req['origin'] =  inp_req['event']['resourceXpath']
+    except:
+        new_req = request.json
+        pass
+
+    # Ends here
+
+
+    try:
+        alert = Alert.parse(new_req)
+        print(alert)
     except ValueError as e:
         raise ApiError(str(e), 400)
 
