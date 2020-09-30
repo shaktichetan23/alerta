@@ -27,7 +27,7 @@ except Exception:
     pass
 
 setuptools.setup(
-    name='alerta-server',
+    name='alerta-server-shakti',
     version=read('VERSION'),
     description='Alerta server WSGI application',
     long_description=read('README.md'),
